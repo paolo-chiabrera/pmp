@@ -1,0 +1,44 @@
+version: '3'
+services:
+  pmp-fe-ngninx:
+    build: ./pmp-fe-nginx
+    depends_on:
+      - pmp-fe-api
+    environment:
+      - VIRTUAL_HOST=api.dev.picmeplease.eu
+    ports:
+      - '80:80'
+    restart: always
+  pmp-fe-api:
+    build: ./pmp-fe-api
+    environment:
+      - NODE_ENV=development
+      - 'NODE_PMP_MONGODB_URI=mongodb://pmp-db:27017/pmp'
+      - NODE_WINSTON_FILENAME=/logs/pmp_fe_api.log
+    depends_on:
+      - 'pmp-fe-redis'
+      - 'pmp-db'
+    ports:
+      - '3000:3000'
+      - '3001:3001'
+    restart: always
+    volumes:
+      - logs-volume:/var/logs/nodejs/pmp
+  pmp-db:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    restart: always
+    volumes:
+      - db-volume:/data/db
+  pmp-fe-redis:
+    environment:
+      - REDIS_MAXMEMORY=256mb
+      - REDIS_MAXMEMORY_POLICY=allkeys-lru
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+    restart: always
+volumes:
+  db-volume: {}
+  logs-volume: {}
