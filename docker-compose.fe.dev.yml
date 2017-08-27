@@ -1,11 +1,13 @@
-version: '3'
+version: '2'
 services:
-  pmp-fe-ngninx:
-    build: ./pmp-fe-nginx
+  pmp-fe-preact:
+    build: ./pmp-fe-preact
     depends_on:
       - pmp-fe-api
     environment:
-      - VIRTUAL_HOST=api.dev.picmeplease.eu
+      - NODE_ENV=production
+    networks:
+      - pmp-fe-network
     ports:
       - '80:80'
     restart: always
@@ -18,6 +20,8 @@ services:
     depends_on:
       - 'pmp-fe-redis'
       - 'pmp-db'
+    networks:
+      - pmp-fe-network
     ports:
       - '3000:3000'
       - '3001:3001'
@@ -26,6 +30,8 @@ services:
       - logs-volume:/var/logs/nodejs/pmp
   pmp-db:
     image: mongo:latest
+    networks:
+      - pmp-fe-network
     ports:
       - '27017:27017'
     restart: always
@@ -36,9 +42,14 @@ services:
       - REDIS_MAXMEMORY=256mb
       - REDIS_MAXMEMORY_POLICY=allkeys-lru
     image: 'redis:latest'
+    networks:
+      - pmp-fe-network
     ports:
       - '6379:6379'
     restart: always
+networks:
+  pmp-fe-network:
+    driver: bridge
 volumes:
   db-volume: {}
   logs-volume: {}

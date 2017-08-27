@@ -1,6 +1,6 @@
 [submodule "pmp-fe-api"]
 	path = pmp-fe-api
 	url = https://github.com/paolo-chiabrera/pmp-fe-api.git
-[submodule "pmp-fe-nginx"]
-	path = pmp-fe-nginx
-	url = https://github.com/paolo-chiabrera/pmp-fe-nginx.git
+[submodule "pmp-fe-preact"]
+	path = pmp-fe-preact
+	url = https://github.com/paolo-chiabrera/pmp-fe-preact.git
