@@ -1,0 +1,18 @@
+{
+  "name": "pmp",
+  "version": "1.0.0",
+  "main": "",
+  "repository": "https://github.com/paolo-chiabrera/pmp.git",
+  "author": "=paolo.chiabrera <=paolo.chiabrera@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "docker-compose up -d --build",
+    "stop": "docker-compose down --remove-orphans",
+    "watch": "watch:pmp-fe-preact",
+    "watch:pmp-fe-api": "chokidar pmp-fe-api/handlers/* -c scripts/pmp-fe-api.sh",
+    "watch:pmp-fe-preact": "chokidar pmp-fe-preact/src/**/* -c scripts/pmp-fe-preact.sh"
+  },
+  "devDependencies": {
+    "chokidar-cli": "^1.2.0"
+  }
+}

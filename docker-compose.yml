@@ -1,11 +1,25 @@
 version: '2'
 services:
+  node-static-render:
+    image: quay.io/d3lirium/node-static-render:latest
+    depends_on:
+      - 'pmp-fe-redis'
+    environment:
+      - DEBUG=nightmare
+      - PORT=9000
+      - NODE_REDIS_ENABLED=true
+      - NODE_REDIS_HOST=pmp-fe-redis
+      - NODE_ENV=production
+    networks:
+      - pmp-fe-network
+    ports:
+      - '9000:9000'
+    restart: always
   pmp-fe-preact:
     build: ./pmp-fe-preact
     depends_on:
       - pmp-fe-api
-    environment:
-      - NODE_ENV=production
+      - node-static-render
     networks:
       - pmp-fe-network
     ports:
@@ -17,6 +31,8 @@ services:
       - NODE_ENV=development
       - 'NODE_PMP_MONGODB_URI=mongodb://pmp-db:27017/pmp'
       - NODE_WINSTON_FILENAME=/logs/pmp_fe_api.log
+      - PMP_REDIS_HOST=pmp-fe-redis
+      - PORT=3000
     depends_on:
       - 'pmp-fe-redis'
       - 'pmp-db'
@@ -24,10 +40,9 @@ services:
       - pmp-fe-network
     ports:
       - '3000:3000'
-      - '3001:3001'
     restart: always
     volumes:
-      - logs-volume:/var/logs/nodejs/pmp
+      - ./logs:/logs
   pmp-db:
     image: mongo:latest
     networks:
@@ -52,4 +67,3 @@ networks:
     driver: bridge
 volumes:
   db-volume: {}
-  logs-volume: {}
